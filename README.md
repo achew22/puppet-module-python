@@ -49,14 +49,21 @@ providing the module directory you cloned this repo to:
 Usage
 -----
 
-To install Python simply import the module:
+To install Python with development dependencies simply import the
+module:
 
-    import python
+    import python::dev
 
 You can install a specific version of Python by importing the
 module with this special syntax:
 
-    class { python: version => "2.5" }
+    class { "python::dev": version => "2.5" }
+
+Note that classes in Puppet are singletons and not more than one
+can be created even if you provide different paramters to them.
+This means that the `python` class can only be used to install one
+version. If you need more coexising versions you could create a new
+class based on the current one suffixed with the actual version.
 
 To install and configure virtualenv, import the module:
 
