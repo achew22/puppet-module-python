@@ -63,7 +63,7 @@ Note that classes in Puppet are singletons and not more than one
 can be created even if you provide different paramters to them.
 This means that the `python` class can only be used to install one
 version. If you need more coexising versions you could create a new
-class based on the current one suffixed with the actual version.
+class based on the current one prefixed with the actual version.
 
 To install and configure virtualenv, import the module:
 
