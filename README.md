@@ -25,7 +25,7 @@ to serve Python WSGI applications.
 TODO
 ----
 
-* Port existing closed source implementation.
+* Installation of packages with pip from requirements file.
 * Uninstallation of packages no longer provided in the
   requirements file.
 * Virtualenv aware pip provider.
