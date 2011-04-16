@@ -74,6 +74,14 @@ resource:
 
     python::venv::isolate { "/var/venv/mediaqueri.es" }
 
+Note that you'll need to define a global search path for the `exec`
+resource to make the `python::venv::isolate` resource function
+properly. This should ideally be placed in `manifests/site.pp`:
+
+    Exec {
+      path => "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    }
+
 If you have several version of Python installed you can specifiy
 which interpreter you'd like the virtualenv to contain:
 
