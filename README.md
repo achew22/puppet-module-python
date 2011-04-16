@@ -82,6 +82,10 @@ of the virtualenv files:
       group => "www-mgr",
     }
 
+
+Proposed implementation
+-----------------------
+
 There will be support for updating packages based on a requirements.txt
 file put in the root of the virtualenv. This was Puppet only runs an update
 when the file content changes, but it does not manage the contents.
