@@ -1,11 +1,11 @@
 class python($ensure=present, $version=latest) {
 
-  $python_package = $version ? {
+  $python = $version ? {
     'latest' => "python",
     default => "python${version}",
   }
 
-  package { $python_package:
+  package { $python:
     ensure => $ensure,
   }
 }

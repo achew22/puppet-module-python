@@ -1,6 +1,4 @@
-class python::venv($ensure=present, $version=latest) {
-
-  class { "python::dev": version => $version }
+class python::venv($ensure=present) {
 
   package { "python-virtualenv":
     ensure => $ensure,
