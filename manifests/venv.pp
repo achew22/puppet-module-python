@@ -8,7 +8,8 @@ class python::venv($ensure=present) {
 define python::venv::isolate($ensure=present,
                              $version=latest,
                              $owner=undef,
-                             $group=undef) {
+                             $group=undef,
+                             $requirements=undef) {
   $root = $name
 
   if $ensure == 'present' {
@@ -35,6 +36,35 @@ define python::venv::isolate($ensure=present,
       creates => $root,
       require => [File[$root_parent],
                   Package["${python}-dev"]],
+    }
+
+    if $requirements {
+
+      file { $requirements:
+        ensure => present,
+        replace => false,
+        owner => $owner,
+        group => $group,
+        content => "# Puppet will install packages listed here and update
+# them if the file contents changes.",
+      }
+
+      $requirements_checksum = "$root/requirements.sha1sum"
+
+      # We create a sha1 checksum of the requirements file so that
+      # we can detect when it changes:
+      exec { "create new checksum of $name requirements":
+          command => "sha1sum $requirements > $requirements_checksum",
+          unless => "sha1sum -c $requirements_checksum",
+          require => File[$requirements],
+        }
+
+        exec { "update $name requirements":
+          command => "$root/bin/pip install -Ur $requirements",
+        cwd => $root,
+        subscribe => Exec["create new checksum of $name requirements"],
+        refreshonly => true,
+      }
     }
 
   } elsif $ensure == 'absent' {

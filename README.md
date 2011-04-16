@@ -5,15 +5,9 @@ Module for configuring Python with virtualenvs and installation
 of packages inside them with pip.
 
 This module support installing packages specified in a
-`requirements.txt` file put inside a virtualenv and updates the
-said packages when the file changes. This way you only have to
-define your requirements one place: in the VCS of your
-application. The means that the same requirements file can be
-used for development and production.
-
-If you have more stable requirements which can be installed
-straight from PyPi you can also choose to provide them directly
-in the Puppet manifest.
+`requirements.txt` file and update said packages when the file
+changes. This way you only have to define your requirements in
+one place: in the VCS for your application code.
 
 Tested on Debian GNU/Linux 6.0 Squeeze. Patches for other
 operating systems welcome.
@@ -25,10 +19,8 @@ to serve Python WSGI applications.
 TODO
 ----
 
-* Installation of packages with pip from requirements file.
 * Uninstallation of packages no longer provided in the
   requirements file.
-* Virtualenv aware pip provider.
 
 
 Installation
@@ -97,41 +89,12 @@ of the virtualenv files:
       group => "www-mgr",
     }
 
+If you point to a [pip requirements file][requirements.txt] Puppet will
+install the specified packages and upgrade them when the file changes:
 
-Proposed implementation
------------------------
-
-There will be support for updating packages based on a requirements.txt
-file put in the root of the virtualenv. This was Puppet only runs an update
-when the file content changes, but it does not manage the contents.
-Proposed implementation follows:
-
-    file { "$name/requirements.txt":
-      ensure => present,
-      replace => false,
-      content => "# Created by Puppet. It will not overwrite changes to this file",
+    python::venv::isolate { "/var/venv/mediaqueri.es":
+      requirements => "/var/www/mediaqueri.es/requirements.txt",
     }
 
-    exec { "update-requirements-for-$name":
-      command => "$pip install -Ur requirements.txt",
-      cwd => $name,
-      refreshonly => true,
-      subscribe => File["$name/requirements.txt"],
-      require => File["$name/requirements.txt"],
-    }
 
-Alternatively you can install stable packages from PyPi without a
-requirements file. Proposed implementation follows:
-
-    python::pip::install { $requirements, $virtualenv }
-
-    define python::pip::install($requirement, $virtualenv) {
-
-      exec { "pip install $requirement":
-        cwd => "$virtualenv/bin",
-        unless => "pip freeze | grep $requirement",
-      }
-    }
-
-This does not take versions into account. A pip package provider
-which supports virtualenvs could be implemented.
+[requirements.txt]: http://www.pip-installer.org/en/latest/requirement-format.html
