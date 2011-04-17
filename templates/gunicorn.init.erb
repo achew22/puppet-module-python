@@ -40,6 +40,11 @@ case "$1" in
       -x $DAEMON -- $DAEMON_OPTS || true
     echo "$NAME."
 	;;
+  reload)
+    echo -n "Reloading $DESC: "
+    start-stop-daemon -K -q -p $PIDFILE -s HUP || true
+    echo "$NAME."
+	;;
   status)
     status_of_proc -p $PIDFILE "$DAEMON" $NAME && exit 0 || exit $?
 	;;
