@@ -39,31 +39,10 @@ define python::venv::isolate($ensure=present,
     }
 
     if $requirements {
-
-      file { $requirements:
-        ensure => present,
-        replace => false,
+      python::pip::requirements { $requirements:
+        venv => $root,
         owner => $owner,
         group => $group,
-        content => "# Puppet will install packages listed here and update
-# them if the file contents changes.",
-      }
-
-      $requirements_checksum = "$root/requirements.sha1sum"
-
-      # We create a sha1 checksum of the requirements file so that
-      # we can detect when it changes:
-      exec { "create new checksum of $name requirements":
-          command => "sha1sum $requirements > $requirements_checksum",
-          unless => "sha1sum -c $requirements_checksum",
-          require => File[$requirements],
-        }
-
-        exec { "update $name requirements":
-          command => "$root/bin/pip install -Ur $requirements",
-        cwd => $root,
-        subscribe => Exec["create new checksum of $name requirements"],
-        refreshonly => true,
       }
     }
 
