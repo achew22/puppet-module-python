@@ -17,9 +17,8 @@ operating systems welcome.
 TODO
 ----
 
-* Proper Gunicorn init script with status and restart.
+* Fix Gunicorn uninstall with ensure => absent.
 * Monitoring of Gunicorn process.
-* Installtion of Gunicorn and setproctitle into the virtualenv.
 * Uninstallation of packages no longer provided in the
   requirements file.
 
@@ -132,5 +131,15 @@ A Django application does not need a WSGI application module argument:
       django => true,
     }
 
+The gunicorn instance resource installs the latest gunicorn into the
+virtualenv the first time it's created. If you need a specific version
+simply provide a version argument:
+
+    python::gunicorn::instance { "cms":
+      venv => "/usr/local/venv/cms",
+      src => "/usr/local/src/cms",
+      django => true,
+      version => "0.12.1",
+    }
 
 [requirements.txt]: http://www.pip-installer.org/en/latest/requirement-format.html

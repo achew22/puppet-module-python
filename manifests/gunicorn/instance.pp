@@ -3,6 +3,7 @@ define python::gunicorn::instance($venv,
                                   $ensure=present,
                                   $wsgi_module=undef,
                                   $django=false,
+                                  $version=undef,
                                   $workers=1) {
   $is_present = $ensure == "present"
 
@@ -17,10 +18,27 @@ define python::gunicorn::instance($venv,
     fail("If you're not using Django you have to define a WSGI module.")
   }
 
+  $gunicorn_package = $version ? {
+    undef => "gunicorn",
+    default => "gunicorn==${version}",
+  }
+
+  python::pip::install {
+    $gunicorn_package:
+      venv => $venv,
+      require => Python::Venv::Isolate[$venv];
+
+    # for --name support in gunicorn:
+    "setproctitle":
+      venv => $venv,
+      require => Python::Venv::Isolate[$venv];
+  }
+
   file { "/etc/init.d/gunicorn-${name}":
     ensure => $ensure,
     content => template("python/gunicorn.init.erb"),
     mode => 744,
+    require => Python::Pip::Install[$gunicorn_package],
   }
 
   service { "gunicorn-${name}":
