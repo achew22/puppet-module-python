@@ -1,0 +1,15 @@
+#!/bin/sh
+
+NAME=<%= name %>
+VENV=<%= venv %>
+SRC=<%= src %>
+GUNICORN=$VENV/bin/gunicorn<% if django %>_django<% end %>
+USER=<%= owner %>
+GROUP=<%= group %>
+SOCKET=<%= socket %>
+PIDFILE=<%= pidfile %>
+WORKERS=<%= workers %>
+
+cd $SRC
+exec $GUNICORN -u $USER -g $GROUP -b $SOCKET -p $PIDFILE \
+  --workers $WORKERS --daemon --name $NAME <%= wsgi_module %>
