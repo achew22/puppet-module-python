@@ -24,12 +24,14 @@ define python::gunicorn::instance($venv,
   }
 
   python::pip::install {
-    $gunicorn_package:
+    "$gunicorn_package in $venv":
+      package => $gunicorn_package,
       venv => $venv,
       require => Python::Venv::Isolate[$venv];
 
     # for --name support in gunicorn:
-    "setproctitle":
+    "setproctitle in $venv":
+      package => "setproctitle",
       venv => $venv,
       require => Python::Venv::Isolate[$venv];
   }
@@ -38,7 +40,7 @@ define python::gunicorn::instance($venv,
     ensure => $ensure,
     content => template("python/gunicorn.init.erb"),
     mode => 744,
-    require => Python::Pip::Install[$gunicorn_package],
+    require => Python::Pip::Install["$gunicorn_package in $venv"],
   }
 
   service { "gunicorn-${name}":
