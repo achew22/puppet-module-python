@@ -41,12 +41,12 @@ providing the module directory you cloned this repo to:
 Usage
 -----
 
-To install Python with development dependencies simply import the
+To install Python with development dependencies simply include the
 module:
 
-    import python::dev
+    include python::dev
 
-You can install a specific version of Python by importing the
+You can install a specific version of Python by including the
 module with this special syntax:
 
     class { "python::dev": version => "2.5" }
@@ -60,9 +60,9 @@ class based on the current one prefixed with the actual version.
 
 ### Virtualenv
 
-To install and configure virtualenv, import the module:
+To install and configure virtualenv, include the module:
 
-    import python::venv
+    include python::venv
 
 Setting up a virtualenv is done with the `python::venv::isolate`
 resource:
