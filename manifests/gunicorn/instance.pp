@@ -1,7 +1,7 @@
 define python::gunicorn::instance($venv,
                                   $src,
                                   $ensure=present,
-                                  $wsgi_module=undef,
+                                  $wsgi_module="",
                                   $django=false,
                                   $version=undef,
                                   $workers=1) {
@@ -14,7 +14,7 @@ define python::gunicorn::instance($venv,
   $pidfile = "$rundir/$name.pid"
   $socket = "unix:$rundir/$name.sock"
 
-  if !$wsgi_module and !$django {
+  if $wsgi_module == "" and !$django {
     fail("If you're not using Django you have to define a WSGI module.")
   }
 

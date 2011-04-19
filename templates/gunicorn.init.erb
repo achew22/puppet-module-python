@@ -5,13 +5,16 @@ DESC=$NAME
 VENV=<%= venv %>
 SRC=<%= src %>
 DAEMON=$VENV/bin/gunicorn<% if django %>_django<% end %>
-USER=<%= owner %>
-GROUP=<%= group %>
+<% if owner == 'undef' or group == 'undef' %>
+CHOWN=""
+<% else %>
+CHOWN="-u<%= owner %> -g <%= group %>"
+<% end %>
 SOCKET=<%= socket %>
 PIDFILE=<%= pidfile %>
 WORKERS=<%= workers %>
 
-DAEMON_OPTS="-u $USER -g $GROUP -b $SOCKET -p $PIDFILE \
+DAEMON_OPTS="$CHOWN -b $SOCKET -p $PIDFILE \
 --workers $WORKERS --daemon --name $NAME <%= wsgi_module %>"
 
 test -x $DAEMON || exit 0
