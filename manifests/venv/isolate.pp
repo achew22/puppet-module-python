@@ -23,6 +23,7 @@ define python::venv::isolate($ensure=present,
     }
 
     exec { "python::venv $root":
+      # TODO: does not work when executed from puppet:
       command => "virtualenv -p `which ${python}` ${root}",
       user => $owner,
       group => $group,
