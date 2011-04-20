@@ -69,7 +69,7 @@ To install and configure virtualenv, include the module:
 Setting up a virtualenv is done with the `python::venv::isolate`
 resource:
 
-    python::venv::isolate { "/usr/local/venv/mediaqueri.es" }
+    python::venv::isolate { "/usr/local/venv/mediaqueri.es": }
 
 Note that you'll need to define a global search path for the `exec`
 resource to make the `python::venv::isolate` resource function
