@@ -17,6 +17,7 @@ operating systems welcome.
 TODO
 ----
 
+* Fix venv creation failure when run from Puppet.
 * Fix Gunicorn uninstall with ensure => absent.
 * Monitoring of Gunicorn process.
 * Uninstallation of packages no longer provided in the
@@ -26,7 +27,7 @@ TODO
 Installation
 ------------
 
-Clone this repo to a virtualenv directory under your Puppet
+Clone this repo to a python directory under your Puppet
 modules directory:
 
     git clone git://github.com/uggedal/puppet-module-python.git python
