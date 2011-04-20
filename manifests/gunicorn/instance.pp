@@ -26,12 +26,14 @@ define python::gunicorn::instance($venv,
   python::pip::install {
     "$gunicorn_package in $venv":
       package => $gunicorn_package,
+      ensure => $ensure,
       venv => $venv,
       require => Python::Venv::Isolate[$venv];
 
     # for --name support in gunicorn:
     "setproctitle in $venv":
       package => "setproctitle",
+      ensure => $ensure,
       venv => $venv,
       require => Python::Venv::Isolate[$venv];
   }

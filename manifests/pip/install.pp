@@ -6,8 +6,15 @@ define python::pip::install($package, $venv, $ensure=present) {
     default => "^${package}==",
   }
 
-  exec { "pip install $name":
-    command => "$venv/bin/pip install $package",
-    unless => "$venv/bin/pip freeze | grep -e $grep_regex"
+  if $ensure == 'present' {
+    exec { "pip install $name":
+      command => "$venv/bin/pip install $package",
+      unless => "$venv/bin/pip freeze | grep -e $grep_regex"
+    }
+  } else {
+    exec { "pip install $name":
+      command => "$venv/bin/pip uninstall $package",
+      onlyif => "$venv/bin/pip freeze | grep -e $grep_regex"
+    }
   }
 }
