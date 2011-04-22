@@ -1,9 +1,9 @@
 define python::venv::isolate($ensure=present,
                              $version=latest,
-                             $owner=undef,
-                             $group=undef,
                              $requirements=undef) {
   $root = $name
+  $owner = $python::venv::owner
+  $group = $python::venv::group
 
   if $ensure == 'present' {
     # Parent directory of root directory. /var/www for /var/www/blog

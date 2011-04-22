@@ -20,7 +20,6 @@ TODO
 * Fix venv creation failure when run from Puppet.
 * Gunicorn master process currently runs as root.
 * Fix Gunicorn uninstall with ensure => absent.
-* Monitoring of Gunicorn process.
 * Uninstallation of packages no longer provided in the
   requirements file.
 
@@ -66,6 +65,11 @@ To install and configure virtualenv, include the module:
 
     include python::venv
 
+You can also provide an owner and group which will be the owner
+of the virtualenv files by including the class with this special syntax:
+
+    class { "python::venv": owner => "www-mgr", group => "www-mgr" }
+
 Setting up a virtualenv is done with the `python::venv::isolate`
 resource:
 
@@ -84,14 +88,6 @@ which interpreter you'd like the virtualenv to contain:
 
     python::venv::isolate { "/usr/local/venv/mediaqueri.es":
       version => "2.5",
-    }
-
-You can also provide an owner and group which will be the owner
-of the virtualenv files:
-
-    python::venv::isolate { "/usr/local/venv/mediaqueri.es":
-      owner => "www-mgr",
-      group => "www-mgr",
     }
 
 If you point to a [pip requirements file][requirements.txt] Puppet will
