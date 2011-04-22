@@ -17,7 +17,6 @@ operating systems welcome.
 TODO
 ----
 
-* Fix venv creation failure when run from Puppet.
 * Gunicorn master process currently runs as root.
 * Fix Gunicorn uninstall with ensure => absent.
 * Uninstallation of packages no longer provided in the

@@ -22,14 +22,21 @@ define python::venv::isolate($ensure=present,
       default => "python${version}",
     }
 
+    # Does not successfully run as www-data on Debian:
     exec { "python::venv $root":
-      # TODO: does not work when executed from puppet:
       command => "virtualenv -p `which ${python}` ${root}",
-      user => $owner,
-      group => $group,
       creates => $root,
       require => [File[$root_parent],
                   Package["${python}-dev"]],
+    }
+
+    # Change ownership of the venv after its created with the default user:
+    file { $root:
+      ensure => directory,
+      recurse => true,
+      owner => $owner,
+      group => $group,
+      require => Exec["python::venv $root"],
     }
 
     if $requirements {
