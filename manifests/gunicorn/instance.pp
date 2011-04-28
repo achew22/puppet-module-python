@@ -23,26 +23,29 @@ define python::gunicorn::instance($venv,
     default => "gunicorn==${version}",
   }
 
-  python::pip::install {
-    "$gunicorn_package in $venv":
-      package => $gunicorn_package,
-      ensure => $ensure,
-      venv => $venv,
-      require => Python::Venv::Isolate[$venv];
+  if $is_present {
+    python::pip::install {
+      "$gunicorn_package in $venv":
+        package => $gunicorn_package,
+        ensure => $ensure,
+        venv => $venv,
+        require => Python::Venv::Isolate[$venv],
+        before => File["/etc/init.d/gunicorn-${name}"];
 
-    # for --name support in gunicorn:
-    "setproctitle in $venv":
-      package => "setproctitle",
-      ensure => $ensure,
-      venv => $venv,
-      require => Python::Venv::Isolate[$venv];
+      # for --name support in gunicorn:
+      "setproctitle in $venv":
+        package => "setproctitle",
+        ensure => $ensure,
+        venv => $venv,
+        require => Python::Venv::Isolate[$venv],
+        before => File["/etc/init.d/gunicorn-${name}"];
+    }
   }
 
   file { "/etc/init.d/gunicorn-${name}":
     ensure => $ensure,
     content => template("python/gunicorn.init.erb"),
     mode => 744,
-    require => Python::Pip::Install["$gunicorn_package in $venv"],
   }
 
   service { "gunicorn-${name}":

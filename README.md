@@ -18,7 +18,6 @@ TODO
 ----
 
 * Gunicorn master process currently runs as root.
-* Fix Gunicorn uninstall with ensure => absent.
 * Uninstallation of packages no longer provided in the
   requirements file.
 
