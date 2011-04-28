@@ -18,6 +18,7 @@ TODO
 ----
 
 * Gunicorn master process currently runs as root.
+* Stop Gunicorn processes before deleting the init script.
 * Uninstallation of packages no longer provided in the
   requirements file.
 
