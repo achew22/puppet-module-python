@@ -53,7 +53,17 @@ define python::gunicorn::instance($venv,
     enable => $is_present,
     hasstatus => $is_present,
     hasrestart => $is_present,
-    subscribe => File["/etc/init.d/gunicorn-${name}"],
-    require => File["/etc/init.d/gunicorn-${name}"],
+    subscribe => $ensure ? {
+      'present' => File["/etc/init.d/gunicorn-${name}"],
+      default => undef,
+    },
+    require => $ensure ? {
+      'present' => File["/etc/init.d/gunicorn-${name}"],
+      default => undef,
+    },
+    before => $ensure ? {
+      'absent' => File["/etc/init.d/gunicorn-${name}"],
+      default => undef,
+    },
   }
 }
