@@ -32,7 +32,7 @@ define python::venv::isolate($ensure=present,
 
     # Change ownership of the venv after its created with the default user:
     exec { "python::venv $root chown":
-      command => "chown -R $owner:$group",
+      command => "chown -R $owner:$group $root",
       require => Exec["python::venv $root"],
     }
 
