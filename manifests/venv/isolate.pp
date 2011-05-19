@@ -31,12 +31,9 @@ define python::venv::isolate($ensure=present,
     }
 
     # Change ownership of the venv after its created with the default user:
-    file { $root:
-      ensure => directory,
-      recurse => true,
-      owner => $owner,
-      group => $group,
-      require => Exec["python::venv $root"],
+    exec {
+      "chown-files":
+        command => "find -type f ! -user '$owner' | xargs chown $owner:$group"
     }
 
     if $requirements {
