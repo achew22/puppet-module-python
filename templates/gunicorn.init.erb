@@ -8,14 +8,14 @@ DAEMON=$VENV/bin/gunicorn<% if django %>_django<% end %>
 <% if owner == 'undef' or group == 'undef' %>
 CHOWN=""
 <% else %>
-CHOWN="-u<%= owner %> -g <%= group %>"
+CHOWN="-c<%= owner %>:<%= group %>"
 <% end %>
 SOCKET=<%= socket %>
 PIDFILE=<%= pidfile %>
 LOGFILE=<%= logfile %>
 WORKERS=<%= workers %>
 
-DAEMON_OPTS="$CHOWN -b $SOCKET -p $PIDFILE --log-file $LOGFILE \
+DAEMON_OPTS="-b $SOCKET -p $PIDFILE --log-file $LOGFILE \
 --workers $WORKERS --daemon --name $NAME <%= wsgi_module %>"
 
 test -x $DAEMON || exit 0
@@ -27,7 +27,7 @@ set -e
 case "$1" in
   start)
     echo -n "Starting $DESC: "
-    start-stop-daemon -S -q -p $PIDFILE -d $SRC \
+    start-stop-daemon -S $CHOWN -q -p $PIDFILE -d $SRC \
       -x $DAEMON -- $DAEMON_OPTS || true
     echo "$NAME."
 	;;
@@ -40,7 +40,7 @@ case "$1" in
     echo -n "Restarting $DESC: "
     start-stop-daemon -K -q -p $PIDFILE -s QUIT || true
     sleep 1
-    start-stop-daemon -S -q -p $PIDFILE -d $SRC \
+    start-stop-daemon -S $CHOWN -q -p $PIDFILE -d $SRC \
       -x $DAEMON -- $DAEMON_OPTS || true
     echo "$NAME."
 	;;
