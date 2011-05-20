@@ -17,7 +17,6 @@ operating systems welcome.
 TODO
 ----
 
-* Stop Gunicorn processes before deleting the init script.
 * Uninstallation of packages no longer provided in the
   requirements file.
 
