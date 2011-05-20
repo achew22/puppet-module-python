@@ -12,9 +12,10 @@ CHOWN="-u<%= owner %> -g <%= group %>"
 <% end %>
 SOCKET=<%= socket %>
 PIDFILE=<%= pidfile %>
+LOGFILE=<%= logfile %>
 WORKERS=<%= workers %>
 
-DAEMON_OPTS="$CHOWN -b $SOCKET -p $PIDFILE \
+DAEMON_OPTS="$CHOWN -b $SOCKET -p $PIDFILE --log-file $LOGFILE \
 --workers $WORKERS --daemon --name $NAME <%= wsgi_module %>"
 
 test -x $DAEMON || exit 0

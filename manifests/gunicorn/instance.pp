@@ -8,11 +8,14 @@ define python::gunicorn::instance($venv,
   $is_present = $ensure == "present"
 
   $rundir = $python::gunicorn::rundir
+  $logdir = $python::gunicorn::logdir
   $owner = $python::gunicorn::owner
   $group = $python::gunicorn::group
 
+  $initscript = "/etc/init.d/gunicorn-${name}"
   $pidfile = "$rundir/$name.pid"
   $socket = "unix:$rundir/$name.sock"
+  $logfile = "$logdir/$name.log"
 
   if $wsgi_module == "" and !$django {
     fail("If you're not using Django you have to define a WSGI module.")
@@ -30,7 +33,7 @@ define python::gunicorn::instance($venv,
         ensure => $ensure,
         venv => $venv,
         require => Python::Venv::Isolate[$venv],
-        before => File["/etc/init.d/gunicorn-${name}"];
+        before => File[$initscript];
 
       # for --name support in gunicorn:
       "setproctitle in $venv":
@@ -38,14 +41,20 @@ define python::gunicorn::instance($venv,
         ensure => $ensure,
         venv => $venv,
         require => Python::Venv::Isolate[$venv],
-        before => File["/etc/init.d/gunicorn-${name}"];
+        before => File[$initscript];
     }
   }
 
-  file { "/etc/init.d/gunicorn-${name}":
+  file { $initscript:
     ensure => $ensure,
     content => template("python/gunicorn.init.erb"),
     mode => 744,
+    require => File["/etc/logrotate.d/gunicorn-${name}"],
+  }
+
+  file { "/etc/logrotate.d/gunicorn-${name}":
+    ensure => $ensure,
+    content => template("python/gunicorn.logrotate.erb"),
   }
 
   service { "gunicorn-${name}":
@@ -54,15 +63,15 @@ define python::gunicorn::instance($venv,
     hasstatus => $is_present,
     hasrestart => $is_present,
     subscribe => $ensure ? {
-      'present' => File["/etc/init.d/gunicorn-${name}"],
+      'present' => File[$initscript],
       default => undef,
     },
     require => $ensure ? {
-      'present' => File["/etc/init.d/gunicorn-${name}"],
+      'present' => File[$initscript],
       default => undef,
     },
     before => $ensure ? {
-      'absent' => File["/etc/init.d/gunicorn-${name}"],
+      'absent' => File[$initscript],
       default => undef,
     },
   }
