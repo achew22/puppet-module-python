@@ -16,9 +16,6 @@ class python::gunicorn($ensure=present, $owner=undef, $group=undef) {
       ensure => $ensure,
       owner => $owner,
       group => $group,
-      recurse => true,
-      purge => true,
-      force => true,
     }
   }
 }
