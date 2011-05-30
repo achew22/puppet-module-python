@@ -10,8 +10,8 @@ This module support installing packages specified in a
 changes. This way you only have to define your requirements in
 one place: in the VCS for your application code.
 
-Tested on Debian GNU/Linux 6.0 Squeeze. Patches for other
-operating systems welcome.
+Tested on Debian GNU/Linux 6.0 Squeeze and Ubuntu 10.4 LTS with
+Puppet 2.6. Patches for other operating systems welcome.
 
 
 TODO
