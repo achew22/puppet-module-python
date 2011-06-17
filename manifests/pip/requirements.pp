@@ -21,10 +21,19 @@ define python::pip::requirements($venv, $owner, $group) {
       require => File[$requirements],
     }
 
+  # Some of the new packages in pypi require an updated distribute
+  # from the one that is in repos on most systems
+  exec { "install updated distribute and pip for $name":
+      command => "$venv/bin/pip install -U distribute pip"
+      cwd => $venv,
+      refreshonly => true,
+  }
+
   exec { "update $name requirements":
     command => "$venv/bin/pip install -Ur $requirements",
     cwd => $venv,
     subscribe => Exec["create new checksum of $name requirements"],
     refreshonly => true,
+    require => Exec["install updated distribute and pip for $name"],
   }
 }
