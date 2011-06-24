@@ -11,6 +11,10 @@ define python::pip::install($package, $venv, $ensure=present) {
       command => "$venv/bin/pip install $package",
       unless => "$venv/bin/pip freeze | grep -e $grep_regex"
     }
+  } elsif $ensure == 'latest' {
+    exec { "pip install $name":
+      command => "$venv/bin/pip install -U $package",
+    }
   } else {
     exec { "pip install $name":
       command => "$venv/bin/pip uninstall $package",

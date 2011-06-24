@@ -38,7 +38,7 @@ define python::venv::isolate($ensure=present,
     }
 
     Python::Pip::Install {
-      ensure => $ensure,
+      ensure => latest,
       venv => $root,
       require => Exec["python::venv $root chown"],
     }
