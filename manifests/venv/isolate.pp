@@ -41,7 +41,7 @@ define python::venv::isolate($ensure=present,
     # Some newer Python packages require an updated distribute
     # from the one that is in repos on most systems:
     exec { "update distribute and pip in $root":
-      comamnd => "$root/bin/pip install -U distribute pip",
+      command => "$root/bin/pip install -U distribute pip",
       refreshonly => true,
     }
 
