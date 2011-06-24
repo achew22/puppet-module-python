@@ -37,20 +37,20 @@ define python::venv::isolate($ensure=present,
       require => Exec["python::venv $root"],
     }
 
+    Python::Pip::Install {
+      ensure => $ensure,
+      venv => $root,
+      require => Exec["python::venv $root chown"],
+    }
+
     # Some newer Python packages require an updated distribute
     # from the one that is in repos on most systems:
-    python::pip::install {
-      "distribute in $root":
+    python::pip::install { "distribute in $root":
         package => "distribute",
-        ensure => $ensure,
-        venv => $root,
-        require => Exec["python::venv $root chown"];
+    }
 
-      "pip in $root":
+    python::pip::install { "pip in $root":
         package => "pip",
-        ensure => $ensure,
-        venv => $root,
-        require => Exec["python::venv $root chown"];
     }
 
     if $requirements {
