@@ -1,6 +1,6 @@
 # Installs packages in a requirements file for a virtualenv.
 # Pip tries to upgrade packages when the requirements file changes.
-define python::pip::requirements($venv, $owner, $group) {
+define python::pip::requirements($venv, $owner=undef, $group=undef) {
   $requirements = $name
   $checksum = "$venv/requirements.checksum"
 
