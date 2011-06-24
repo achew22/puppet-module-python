@@ -26,6 +26,7 @@ define python::venv::isolate($ensure=present,
     exec { "python::venv $root":
       command => "virtualenv -p `which ${python}` ${root}",
       creates => $root,
+      notify => Exec["update distribute and pip in $root"],
       require => [File[$root_parent],
                   Package["${python}-dev"]],
     }
@@ -37,20 +38,11 @@ define python::venv::isolate($ensure=present,
       require => Exec["python::venv $root"],
     }
 
-    Python::Pip::Install {
-      ensure => latest,
-      venv => $root,
-      require => Exec["python::venv $root chown"],
-    }
-
     # Some newer Python packages require an updated distribute
     # from the one that is in repos on most systems:
-    python::pip::install { "distribute in $root":
-        package => "distribute",
-    }
-
-    python::pip::install { "pip in $root":
-        package => "pip",
+    exec { "update distribute and pip in $root":
+      comamnd => "$root/bin/pip install -U distribute pip",
+      refreshonly => true,
     }
 
     if $requirements {
@@ -58,8 +50,6 @@ define python::venv::isolate($ensure=present,
         venv => $root,
         owner => $owner,
         group => $group,
-        require => [Python::Pip::Install["distribute in $root"],
-                    Python::Pip::Install["pip in $root"]],
       }
     }
 
