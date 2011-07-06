@@ -35,7 +35,9 @@ define python::venv::isolate($ensure=present,
     exec { "python::venv $root chown":
       command => "chown -R $owner:$group $root",
       onlyif => "find $root ! (-user $owner -group $group)",
-      require => Exec["python::venv $root"],
+      require => [Exec["python::venv $root"],
+                  Python::Pip::Requirements[$requirements],
+                  Exec['update distribute and pip in $root"]],
     }
 
     # Some newer Python packages require an updated distribute
@@ -43,6 +45,7 @@ define python::venv::isolate($ensure=present,
     exec { "update distribute and pip in $root":
       command => "$root/bin/pip install -U distribute pip",
       refreshonly => true,
+      require => Exec["python::venv $root"],
     }
 
     if $requirements {
